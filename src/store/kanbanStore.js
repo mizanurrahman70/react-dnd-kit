@@ -18,6 +18,11 @@ const initialColumns = {
     title: 'Done',
     taskIds: ['task-6'],
   },
+  'column-4': {
+    id: 'column-4',
+    title: 'Blocked',
+    taskIds: ['task-7'],
+  },
 };
 
 const initialTasks = {
@@ -57,9 +62,15 @@ const initialTasks = {
     description: 'Set up repository and development environment.',
     createdAt: new Date(),
   },
+  'task-7': {
+    id: 'task-7',
+    title: 'Initial project setup',
+    description: 'Set up repository and development environment.',
+    createdAt: new Date(),
+  },
 };
 
-const initialColumnOrder = ['column-1', 'column-2', 'column-3'];
+const initialColumnOrder = ['column-1', 'column-2', 'column-3', 'column-4'];
 
 export const useKanbanStore = create(
   persist(
@@ -70,7 +81,7 @@ export const useKanbanStore = create(
 
       addTask: (columnId, title, description) => {
         const newTaskId = `task-${nanoid(8)}`;
-        
+
         set((state) => {
           const newTask = {
             id: newTaskId,
@@ -141,9 +152,28 @@ export const useKanbanStore = create(
           };
         });
       },
+
+      resetBoard: () => {
+        set(() => ({
+          tasks: initialTasks,
+          columns: initialColumns,
+          columnOrder: initialColumnOrder,
+        }));
+      },
     }),
     {
       name: 'kanban-storage',
+      version: 2,
+      migrate: (persistedState, version) => {
+        if (version < 2) {
+          return {
+            tasks: initialTasks,
+            columns: initialColumns,
+            columnOrder: initialColumnOrder,
+          };
+        }
+        return persistedState;
+      },
     }
   )
 );
