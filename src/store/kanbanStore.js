@@ -153,6 +153,21 @@ export const useKanbanStore = create(
         });
       },
 
+      addColumn: (title) => {
+        const newColumnId = `column-${nanoid(8)}`;
+        set((state) => ({
+          columns: {
+            ...state.columns,
+            [newColumnId]: {
+              id: newColumnId,
+              title,
+              taskIds: [],
+            },
+          },
+          columnOrder: [...state.columnOrder, newColumnId],
+        }));
+      },
+
       resetBoard: () => {
         set(() => ({
           tasks: initialTasks,
